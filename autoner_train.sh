@@ -1,9 +1,16 @@
+#!/usr/bin/env bash
+
+set -e 
+
 MODEL_NAME="BC5CDR"
 RAW_TEXT="data/BC5CDR/raw_text.txt"
 DICT_CORE="data/BC5CDR/dict_core.txt"
 DICT_FULL="data/BC5CDR/dict_full.txt"
 EMBEDDING_TXT_FILE="embedding/bio_embedding.txt"
-MUST_RE_RUN=0
+MUST_RE_RUN=1
+
+#PYTHON="python -m pdb"
+PYTHON="python"
 
 green=`tput setaf 2`
 reset=`tput sgr0`
@@ -20,7 +27,8 @@ echo ${green}=== Compilation ===${reset}
 make
 
 if [ $EMBEDDING_TXT_FILE == "embedding/bio_embedding.txt" ]; then
-    if [ ! -e $MODEL_ROOT/embedding.pk ]; then
+    #if [ ! -e $MODEL_ROOT/embedding.pk ]; then
+    if [ ! -e $EMBEDDING_TXT_FILE ]; then
         echo ${green}=== Downloading pre-encoded embedding ===${reset}
         curl http://dmserv4.cs.illinois.edu/bio_embedding.pk -o $MODEL_ROOT/embedding.pk
     fi
@@ -53,7 +61,7 @@ CHECKPOINT_DIR=$MODEL_ROOT/checkpoint/
 CHECKPOINT_NAME=autoner
 
 echo ${green}=== Training AutoNER Model ===${reset}
-python train_partial_ner.py \
+$PYTHON train_partial_ner.py \
     --cp_root $CHECKPOINT_DIR \
     --checkpoint_name $CHECKPOINT_NAME \
     --eval_dataset $MODEL_ROOT/encoded_data/test.pk \
