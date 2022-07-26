@@ -121,7 +121,10 @@ if __name__ == "__main__":
 
             logger.info('############')
             logger.info('Epoch: {}'.format(indexs))
-            pw.nvidia_memory_map(gpu_index = gpu_index)
+            try:
+                pw.nvidia_memory_map(gpu_index = gpu_index)
+            except:
+                pass
 
             ner_model.train()
 
